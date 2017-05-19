@@ -390,6 +390,10 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
             if (origURL) {
               [self.response setObject:origURL forKey:@"origURL"];
             }
+            
+            if(([mediaType isEqualToString:(NSString *)kUTTypeImage])) {
+                [self.response setObject:@"photo" forKey:@"mediaType"];
+            }
 
             NSNumber *fileSizeValue = nil;
             NSError *fileSizeError = nil;
@@ -461,6 +465,10 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
                       return;
                   }
                 }
+            }
+            
+            if(([mediaType isEqualToString:(NSString *)kUTTypeMovie]) || ([mediaType isEqualToString:(NSString *)kUTTypeVideo])) {
+                [self.response setObject:@"video" forKey:@"mediaType"];
             }
 
             [self.response setObject:videoDestinationURL.absoluteString forKey:@"uri"];
