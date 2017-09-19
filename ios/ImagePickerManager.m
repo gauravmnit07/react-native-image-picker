@@ -1,5 +1,6 @@
 #import "ImagePickerManager.h"
 #import <React/RCTConvert.h>
+#import <React/RCTLog.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVFoundation/AVFoundation.h>
 #import <Photos/Photos.h>
@@ -278,7 +279,7 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
                 NSError *error;
                 [[NSFileManager defaultManager] createDirectoryAtPath:newPath withIntermediateDirectories:YES attributes:nil error:&error];
                 if (error) {
-                    NSLog(@"Error creating documents subdirectory: %@", error);
+                    RCTLog(@"Error creating documents subdirectory: %@", error);
                     self.callback(@[@{@"error": error.localizedFailureReason}]);
                     return;
                 }
@@ -411,7 +412,7 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
                 if ([[storageOptions objectForKey:@"waitUntilSaved"] boolValue]) {
                     [library writeImageToSavedPhotosAlbum:image.CGImage metadata:[info valueForKey:UIImagePickerControllerMediaMetadata] completionBlock:^(NSURL *assetURL, NSError *error) {
                         if (error) {
-                            NSLog(@"Error while saving picture into photo album");
+                            RCTLog(@"Error while saving picture into photo album");
                         } else {
                             // when the image has been saved in the photo album
                             if (assetURL) {
@@ -484,7 +485,7 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
                         self.callback(@[@{@"error": error.localizedFailureReason}]);
                         return;
                     } else {
-                        NSLog(@"Save video succeed.");
+                        RCTLog(@"Save video succeed.");
                         if ([[storageOptions objectForKey:@"waitUntilSaved"] boolValue]) {
                             if (assetURL) {
                                 PHAsset *capturedAsset = [PHAsset fetchAssetsWithALAssetURLs:@[assetURL] options:nil].lastObject;
@@ -603,7 +604,7 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
     [image drawInRect:CGRectMake(0, 0, scaledSize.width, scaledSize.height)];
     newImage = UIGraphicsGetImageFromCurrentImageContext();
     if (newImage == nil) {
-        NSLog(@"could not scale image");
+        RCTLog(@"could not scale image");
     }
     UIGraphicsEndImageContext();
 
@@ -689,12 +690,12 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
                                       forKey: NSURLIsExcludedFromBackupKey error: &error];
 
         if(!success){
-            NSLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
+            RCTLog(@"Error excluding %@ from backup %@", [URL lastPathComponent], error);
         }
         return success;
     }
     else {
-        NSLog(@"Error setting skip backup attribute: file not found");
+        RCTLog(@"Error setting skip backup attribute: file not found");
         return @NO;
     }
 }
